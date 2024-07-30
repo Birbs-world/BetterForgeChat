@@ -1,4 +1,6 @@
 /.gradle
+/.idea
+/.vscode
 /build
 /run
 /bin
@@ -7,3 +9,4 @@
 /wiki
 /secret
 /logs
+/run-data

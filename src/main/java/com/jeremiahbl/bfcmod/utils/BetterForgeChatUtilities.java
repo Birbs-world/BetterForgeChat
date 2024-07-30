@@ -5,7 +5,7 @@ import com.jeremiahbl.bfcmod.TextFormatter;
 import com.jeremiahbl.bfcmod.config.ConfigHandler;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 public class BetterForgeChatUtilities {
 	private static String playerNameFormat = "";
@@ -34,10 +34,10 @@ public class BetterForgeChatUtilities {
 			return player.getName();
 		} else return fmat.replace("$prefix", pfx).replace("$name", name).replace("$suffix", sfx);
 	}
-	public static TextComponent getFormattedPlayerName(GameProfile player) {
-		return TextFormatter.stringToFormattedText(getRawPreferredPlayerName(player));
+	public static Component getFormattedPlayerName(GameProfile player) {
+		return (Component) TextFormatter.stringToFormattedText(getRawPreferredPlayerName(player));
 	}
-	public static TextComponent getFormattedPlayerName(GameProfile player, boolean enableNickname, boolean enableMetadata) {
-		return TextFormatter.stringToFormattedText(getRawPreferredPlayerName(player, enableNickname, enableMetadata));
+	public static Component getFormattedPlayerName(GameProfile player, boolean enableNickname, boolean enableMetadata) {
+		return (Component) TextFormatter.stringToFormattedText(getRawPreferredPlayerName(player, enableNickname, enableMetadata));
 	}
 }

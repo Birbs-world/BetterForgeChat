@@ -29,15 +29,14 @@ displayURL="https://github.com/abc123me/BetterForgeChat" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="Logo.png" #optional
 # A text field displayed in the mod UI
-credits="(c) Jeremiah Lowe & Disa Kandria 2022-2024" #optional
+credits="(c) Jeremiah Lowe 2022-2023" #optional
 # A text field displayed in the mod UI
 authors="Jeremiah Lowe, Disa Kandria" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 A better chat mod for Forge.
-(with LuckPerms and FTB Essentials integration)
+(with LuckPerms integration)
 '''
-project= "betterforgechat"
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.bfcmod]] #optional
     # the modid of the dependency
@@ -60,7 +59,7 @@ project= "betterforgechat"
     side="BOTH"
 [[dependencies.bfcmod]]
     modId="luckperms"
-    mandatory=false
+    mandatory=true
     versionRange="5.4,"
     ordering="AFTER"
     side="BOTH"

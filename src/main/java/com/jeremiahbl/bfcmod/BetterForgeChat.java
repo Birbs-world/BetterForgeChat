@@ -18,7 +18,7 @@ import net.minecraftforge.network.NetworkConstants;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(BetterForgeChat.MODID)
+@Mod(BetterForgeChat.MODID )
 public class BetterForgeChat {
 	public static final String CHAT_ID_STR = 
 			"&cBetter &9&lForge&r &eChat&r &d(c) Jeremiah Lowe 2022-2023&r\n";
@@ -61,7 +61,7 @@ public class BetterForgeChat {
         MinecraftForge.EVENT_BUS.register(this);
         // Register commands
         MinecraftForge.EVENT_BUS.register(commandRegistrator);
-        
+
     }
     private void loadComplete(final FMLLoadCompleteEvent e) {
     	// Register server chat event

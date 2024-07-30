@@ -1,7 +1,8 @@
 package com.jeremiahbl.bfcmod;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class BitwiseStyling {
 	public static final byte BOLD_BIT          = 1;
@@ -23,23 +24,23 @@ public class BitwiseStyling {
 		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    out += TextFormatter.OBFUSCATED_FORMAT;
 		return out;
 	}
-	public static final TextComponent makeEncapsulatingTextComponent(String msg, byte mask) {
-		TextComponent out = new TextComponent(msg);
-		if((mask & BitwiseStyling.BOLD_BIT) != 0)          out.withStyle(ChatFormatting.BOLD); 
-		if((mask & BitwiseStyling.ITALIC_BIT) != 0)        out.withStyle(ChatFormatting.ITALIC); 
-		if((mask & BitwiseStyling.UNDERLINE_BIT) != 0)     out.withStyle(ChatFormatting.UNDERLINE); 
-		if((mask & BitwiseStyling.STRIKETHROUGH_BIT) != 0) out.withStyle(ChatFormatting.STRIKETHROUGH); 
-		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    out.withStyle(ChatFormatting.OBFUSCATED); 
+	public static final Component makeEncapsulatingTextComponent(String msg, byte mask) {
+		Component out = Component.literal(msg);
+		if((mask & BitwiseStyling.BOLD_BIT) != 0)          ((MutableComponent) out).withStyle(ChatFormatting.BOLD); 
+		if((mask & BitwiseStyling.ITALIC_BIT) != 0)        ((MutableComponent) out).withStyle(ChatFormatting.ITALIC); 
+		if((mask & BitwiseStyling.UNDERLINE_BIT) != 0)     ((MutableComponent) out).withStyle(ChatFormatting.UNDERLINE); 
+		if((mask & BitwiseStyling.STRIKETHROUGH_BIT) != 0) ((MutableComponent) out).withStyle(ChatFormatting.STRIKETHROUGH); 
+		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    ((MutableComponent) out).withStyle(ChatFormatting.OBFUSCATED); 
 		return out;
 	}
 	public static final byte getStyleBit(char c) {
-    	switch(c) {
-	    	case 'l': return BOLD_BIT;
-			case 'n': return UNDERLINE_BIT;
-			case 'o': return ITALIC_BIT;
-			case 'k': return OBFUSCATED_BIT;
-			case 'm': return STRIKETHROUGH_BIT;
-			default: return 0;
-    	}
+            return switch (c) {
+                case 'l' -> BOLD_BIT;
+                case 'n' -> UNDERLINE_BIT;
+                case 'o' -> ITALIC_BIT;
+                case 'k' -> OBFUSCATED_BIT;
+                case 'm' -> STRIKETHROUGH_BIT;
+                default -> 0;
+            };
     }
 }

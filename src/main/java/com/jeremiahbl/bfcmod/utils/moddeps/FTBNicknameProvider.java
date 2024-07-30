@@ -8,14 +8,15 @@ import com.mojang.authlib.GameProfile;
 import dev.ftb.mods.ftbessentials.util.FTBEPlayerData;
 
 public class FTBNicknameProvider implements INicknameProvider {
-	public FTBNicknameProvider() {
-		// Literally here just to trigger an error! by loading the FTBEPlayerData class
-		FTBEPlayerData.MAP.size();
-	}
 	@Override public String getPlayerNickname(GameProfile player) {
-		FTBEPlayerData data = FTBEPlayerData.MAP.get(player.getId());
-		if(data != null && data.nick != null && data.nick.length() > 0)
-			return data.nick;
+		/* FTBEPlayerData data = FTBEPlayerData;
+		if(data != null && data.getNick() != null && data.getNick().length() > 0)
+			return data.getNick();
+		return null; */
+		FTBEPlayerData data = FTBEPlayerData.getOrCreate(player).orElse(null);
+                if (data != null && !data.getNick().isEmpty()) {
+                    return data.getNick();
+		}
 		return null;
 	}
 	@Override public @NonNull String getProviderName() {

@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.jeremiahbl.bfcmod.BetterForgeChat;
 import com.jeremiahbl.bfcmod.TextFormatter;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.server.permission.PermissionAPI;
@@ -57,7 +57,7 @@ public class PermissionsHandler {
 	private static PermissionNode<Boolean> ezyPermission(String id, boolean defVal, String name, String desc) {
 		PermissionNode<Boolean> node = new PermissionNode<Boolean>(BetterForgeChat.MODID, id, 
 				PermissionTypes.BOOLEAN, (player, uuid, context) -> defVal);
-		node.setInformation(new TextComponent(name), TextFormatter.stringToFormattedText(desc));
+		node.setInformation((Component) Component.literal(name), (Component) TextFormatter.stringToFormattedText(desc));
 		return node;
 	}
 

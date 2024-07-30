@@ -1,6 +1,7 @@
 package com.jeremiahbl.bfcmod.commands;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import com.jeremiahbl.bfcmod.BetterForgeChat;
 import com.jeremiahbl.bfcmod.TextFormatter;
@@ -14,6 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 
 public class BfcCommands {
@@ -33,7 +35,7 @@ public class BfcCommands {
 		return checkPermission(c.getSource(), node);
 	}
 	protected static int failNoPermission(CommandContext<CommandSourceStack> ctx) {
-		ctx.getSource().sendFailure(TextFormatter.stringToFormattedText(TextFormatter.COLOR_RED + "You don't have permission to run this command" + TextFormatter.RESET_ALL_FORMAT));
+		ctx.getSource().sendFailure((Component) TextFormatter.stringToFormattedText(TextFormatter.COLOR_RED + "You don't have permission to run this command" + TextFormatter.RESET_ALL_FORMAT));
 		return 0;
 	}
 	
@@ -53,35 +55,42 @@ public class BfcCommands {
 	
 	public static int modCommand(CommandContext<CommandSourceStack> ctx) {
 		String arg = StringArgumentType.getString(ctx, "mode");
-		if(arg.contentEquals("colors")) {
-			if(checkContextPermission(ctx, PermissionsHandler.bfcModCommandColorsSubCommand))
-				return colorCommand(ctx);
-			else return failNoPermission(ctx);
-		} else if(arg.contentEquals("info")) {
-			if(checkContextPermission(ctx, PermissionsHandler.bfcModCommandInfoSubCommand)) {
-				boolean hasMetaProv = BetterForgeChat.instance.metadataProvider != null;
-				boolean hasNickProv = BetterForgeChat.instance.nicknameProvider != null;
-				String metaProvName = hasMetaProv ? BetterForgeChat.instance.metadataProvider.getProviderName() : "";
-				String nickProvName = hasNickProv ? BetterForgeChat.instance.nicknameProvider.getProviderName() : "";
-				if(hasMetaProv) metaProvName = " (via " + metaProvName + ")";
-				if(hasNickProv) nickProvName = " (via " + nickProvName + ")";
-				ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText(
-						BetterForgeChat.CHAT_ID_STR + "\n&eMod ID: &d" + BetterForgeChat.MODID + "    &r&eMod version: &d" + BetterForgeChat.VERSION + " (forge)&r\n\n"
-						+ (hasMetaProv ? "&a&lWITH" : "&c&lWITHOUT") + "&r&e metadata integration" + metaProvName + "&r\n"
-						+ (hasNickProv ? "&a&lWITH" : "&c&lWITHOUT") + "&r&e nickname integration" + nickProvName + "&r\n"), false);
-				return 1;
-			} else return failNoPermission(ctx);
-		} else if(arg.contentEquals("test")) {
-			ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText(
-					BetterForgeChat.CHAT_ID_STR
-							+ "&eColors & Styling internal debug test&r\n"
-							+ "Normal &lBold&r &nUnderline&r &oItalic&r &mStrikthrough&r &kObfuscated&r &rReset\n"
-							+ "Normal &lBold &nUnderline &oItalic &mStrikthrough &kObfuscated &rReset"), false);
-			return 1;
-		} else return 0;
+            switch (arg) {
+                case "colors" -> {
+                    if(checkContextPermission(ctx, PermissionsHandler.bfcModCommandColorsSubCommand))
+                        return colorCommand(ctx);
+                    else return failNoPermission(ctx);
+                }
+                case "info" -> {
+                    if(checkContextPermission(ctx, PermissionsHandler.bfcModCommandInfoSubCommand)) {
+                        boolean hasMetaProv = BetterForgeChat.instance.metadataProvider != null;
+                        boolean hasNickProv = BetterForgeChat.instance.nicknameProvider != null;
+                        String metaProvName = hasMetaProv ? BetterForgeChat.instance.metadataProvider.getProviderName() : "";
+                        String nickProvName = hasNickProv ? BetterForgeChat.instance.nicknameProvider.getProviderName() : "";
+                        if(hasMetaProv) metaProvName = " (via " + metaProvName + ")";
+                        if(hasNickProv) nickProvName = " (via " + nickProvName + ")";
+                        ctx.getSource().sendSuccess((Supplier<Component>) TextFormatter.stringToFormattedText(
+                                BetterForgeChat.CHAT_ID_STR + "\n&eMod ID: &d" + BetterForgeChat.MODID + "    &r&eMod version: &d" + BetterForgeChat.VERSION + " (forge)&r\n\n"
+                                        + (hasMetaProv ? "&a&lWITH" : "&c&lWITHOUT") + "&r&e metadata integration" + metaProvName + "&r\n"
+                                        + (hasNickProv ? "&a&lWITH" : "&c&lWITHOUT") + "&r&e nickname integration" + nickProvName + "&r\n"), false);
+                        return 1;
+                    } else return failNoPermission(ctx);
+                }
+                case "test" -> {
+                    ctx.getSource().sendSuccess((Supplier<Component>) TextFormatter.stringToFormattedText(
+                            BetterForgeChat.CHAT_ID_STR
+                                    + "&eColors & Styling internal debug test&r\n"
+                                            + "Normal &lBold&r &nUnderline&r &oItalic&r &mStrikthrough&r &kObfuscated&r &rReset\n"
+                                            + "Normal &lBold &nUnderline &oItalic &mStrikthrough &kObfuscated &rReset"), false);
+                    return 1;
+                }
+                default -> {
+                    return 0;
+                }
+            }
 	}
 	public static int colorCommand(CommandContext<CommandSourceStack> ctx) {
-		ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText(
+		ctx.getSource().sendSuccess((Supplier<Component>) TextFormatter.stringToFormattedText(
 				BetterForgeChat.CHAT_ID_STR + TextFormatter.colorString()), false);
 		return 1;
 	}
