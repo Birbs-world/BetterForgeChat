@@ -4,8 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.function.Supplier;
-
 public final class TextFormatter {
 	public static final String RESET_ALL_FORMAT = "&r";
 	
@@ -37,7 +35,7 @@ public final class TextFormatter {
 	}
 	public static MutableComponent stringToFormattedText(String msg, boolean enableColors, boolean enableStyles) {
 		if(msg == null) return null;
-		MutableComponent newMsg = Component.literal("");
+		MutableComponent newMsg = Component.empty();
 		boolean nextIsStyle = false;
 		String curStr = "";
 		ChatFormatting curColor = ChatFormatting.WHITE;
@@ -50,8 +48,8 @@ public final class TextFormatter {
 					curStr += "&";
 				} else nextIsStyle = true;
 			} else if(nextIsStyle) {
-				Component tmp = BitwiseStyling.makeEncapsulatingTextComponent(curStr, enableStyles ? curStyle : 0);
-				((MutableComponent) tmp).withStyle(curColor);
+				MutableComponent tmp = BitwiseStyling.makeEncapsulatingTextComponent(curStr, enableStyles ? curStyle : 0);
+				tmp.withStyle(curColor);
 				newMsg.append(tmp);
 				if(enableColors)
 					curColor = getColor(c, curColor);
@@ -65,8 +63,8 @@ public final class TextFormatter {
 			} else curStr += c;
 		}
 		if(!curStr.isEmpty()) {
-			Component tmp = BitwiseStyling.makeEncapsulatingTextComponent(curStr, enableStyles ? curStyle : 0);
-			((MutableComponent) tmp).withStyle(curColor);
+			MutableComponent tmp = BitwiseStyling.makeEncapsulatingTextComponent(curStr, enableStyles ? curStyle : 0);
+			tmp.withStyle(curColor);
 			newMsg.append(tmp);
 		}
 		return newMsg;
@@ -95,10 +93,10 @@ public final class TextFormatter {
 		return newMsg;
 	}
 
-	public static boolean messageContainsColorsOrStyles(Component msg, boolean checkColors) {
+	public static boolean messageContainsColorsOrStyles(String msg, boolean checkColors) {
 		boolean checkNext = false;
-		for(int i = 0; i < ((CharSequence) msg).length(); i++) {
-			char c = ((CharSequence) msg).charAt(i);
+		for(int i = 0; i < msg.length(); i++) {
+			char c = msg.charAt(i);
 			if(c == '&') {
                 checkNext = !checkNext;
 			} else if(checkNext) {

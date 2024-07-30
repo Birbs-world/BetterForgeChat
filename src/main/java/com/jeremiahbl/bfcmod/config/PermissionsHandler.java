@@ -57,7 +57,7 @@ public class PermissionsHandler {
 	private static PermissionNode<Boolean> ezyPermission(String id, boolean defVal, String name, String desc) {
 		PermissionNode<Boolean> node = new PermissionNode<Boolean>(BetterForgeChat.MODID, id, 
 				PermissionTypes.BOOLEAN, (player, uuid, context) -> defVal);
-		node.setInformation((Component) Component.literal(name), (Component) TextFormatter.stringToFormattedText(desc));
+		node.setInformation(Component.literal(name),TextFormatter.stringToFormattedText(desc));
 		return node;
 	}
 

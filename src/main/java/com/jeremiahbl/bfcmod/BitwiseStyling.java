@@ -3,6 +3,7 @@ package com.jeremiahbl.bfcmod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 
 public class BitwiseStyling {
 	public static final byte BOLD_BIT          = 1;
@@ -24,13 +25,13 @@ public class BitwiseStyling {
 		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    out += TextFormatter.OBFUSCATED_FORMAT;
 		return out;
 	}
-	public static final Component makeEncapsulatingTextComponent(String msg, byte mask) {
-		Component out = Component.literal(msg);
-		if((mask & BitwiseStyling.BOLD_BIT) != 0)          ((MutableComponent) out).withStyle(ChatFormatting.BOLD); 
-		if((mask & BitwiseStyling.ITALIC_BIT) != 0)        ((MutableComponent) out).withStyle(ChatFormatting.ITALIC); 
-		if((mask & BitwiseStyling.UNDERLINE_BIT) != 0)     ((MutableComponent) out).withStyle(ChatFormatting.UNDERLINE); 
-		if((mask & BitwiseStyling.STRIKETHROUGH_BIT) != 0) ((MutableComponent) out).withStyle(ChatFormatting.STRIKETHROUGH); 
-		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    ((MutableComponent) out).withStyle(ChatFormatting.OBFUSCATED); 
+	public static final MutableComponent makeEncapsulatingTextComponent(String msg, byte mask) {
+		MutableComponent out = Component.literal(msg);
+		if((mask & BitwiseStyling.BOLD_BIT) != 0)          out.withStyle(ChatFormatting.BOLD);
+		if((mask & BitwiseStyling.ITALIC_BIT) != 0)        out.withStyle(ChatFormatting.ITALIC);
+		if((mask & BitwiseStyling.UNDERLINE_BIT) != 0)     out.withStyle(ChatFormatting.UNDERLINE);
+		if((mask & BitwiseStyling.STRIKETHROUGH_BIT) != 0) out.withStyle(ChatFormatting.STRIKETHROUGH);
+		if((mask & BitwiseStyling.OBFUSCATED_BIT) != 0)    out.withStyle(ChatFormatting.OBFUSCATED);
 		return out;
 	}
 	public static final byte getStyleBit(char c) {

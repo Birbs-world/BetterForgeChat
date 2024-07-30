@@ -1,13 +1,11 @@
 package com.jeremiahbl.bfcmod;
 
-import net.minecraft.network.chat.Component;
-
 public class MarkdownFormatter {
-	public static final Component markdownStringToFormattedString(String md) {
+	public static final String markdownStringToFormattedString(String md) {
 		return markdownStringToFormattedString(md, BitwiseStyling.ALL_STYLES);
 	}
-	public static final Component markdownStringToFormattedString(String md, int i) {
-		StringBuilder newStr = new StringBuilder();
+	public static final String markdownStringToFormattedString(String md, byte allowedMask) {
+		String newStr = "";
 		md += " ";
 		byte mask = 0; int tmpPos = 0;
 		char[] tmpMd = new char[2];
@@ -17,17 +15,17 @@ public class MarkdownFormatter {
 			if(c == '\\') {
 				if(escapeNext) {
 					escapeNext = false;
-					newStr.append(c);
+					newStr += c;
 				} else escapeNext = true;
 			} else if(c == '*' || c == '_' || c == '~') {
 				if(escapeNext) {
 					escapeNext = false;
-					newStr.append(c);
+					newStr += c;
 				} else {
 					tmpMd[tmpPos++] = c;
 					if(tmpPos >= 2) {
 						byte nmask = convertMD(mask, tmpMd, tmpPos);
-						newStr.append(maskDiff(nmask, mask, i));
+						newStr += maskDiff(nmask, mask, allowedMask);
 						mask = nmask;
 						tmpPos = 0;
 					}
@@ -35,14 +33,14 @@ public class MarkdownFormatter {
 			} else {
 				if(tmpPos > 0) {
 					byte nmask = convertMD(mask, tmpMd, tmpPos);
-					newStr.append(maskDiff(nmask, mask, i));
+					newStr += maskDiff(nmask, mask, allowedMask);
 					mask = nmask;
 					tmpPos = 0;
 				}
-				newStr.append(c);
+				newStr += c;
 			}
 		}
-		return Component.nullToEmpty(newStr.toString().trim());
+		return newStr.trim();
 	}
 	private static byte convertMD(byte mask, char[] chrs, int len) {
 		char c1 = len > 0 ? chrs[0] : ' ';
@@ -59,15 +57,15 @@ public class MarkdownFormatter {
 			return bitToggle(mask, BitwiseStyling.UNDERLINE_BIT);
 		else return mask;
 	}
-	private static String maskDiff(byte newMask, byte oldMask, int i) {
+	private static String maskDiff(byte newMask, byte oldMask, byte allowedMask) {
 		if(newMask == 0) return TextFormatter.RESET_ALL_FORMAT;
 		if(newMask == oldMask) return "";
 		byte stylesNew = bitCount(newMask);
 		byte stylesOld = bitCount(oldMask);
 		if(stylesNew > stylesOld) // Styles were added
-			return BitwiseStyling.styleString((byte) (newMask & (~oldMask) & i));
+			return BitwiseStyling.styleString((byte) (newMask & (~oldMask) & allowedMask));
 		else if(stylesNew < stylesOld) { // Styles were removed
-			return TextFormatter.RESET_ALL_FORMAT + BitwiseStyling.styleString((byte)(newMask & i));
+			return TextFormatter.RESET_ALL_FORMAT + BitwiseStyling.styleString((byte)(newMask & allowedMask));
 		} else { // Styles shifted
 			return "MARKDOWN FORMATTER INVALID STATE - REPORT TO DEVELOPER";
 		}
@@ -86,8 +84,7 @@ public class MarkdownFormatter {
 }
 
 // Debugging porpoises only
-/*
-public static void main(String[] args) {
+/*public static void main(String[] args) {
 	System.out.println(markdownStringToFormattedString("***test**123*"));
 }
 private static String maskStr(byte mask) {
@@ -103,5 +100,4 @@ private static String maskStr(byte mask) {
 	if((mask & MARKDOWN_MAGIC_BIT) != 0)  out += "MAG";
 	else out += "---";
 	return out;
-}
-*/
+}*/
