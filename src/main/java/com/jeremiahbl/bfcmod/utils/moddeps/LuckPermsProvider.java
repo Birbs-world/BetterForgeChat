@@ -8,31 +8,38 @@ import com.mojang.authlib.GameProfile;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.model.user.User;
-import net.minecraft.server.level.ServerPlayer;
 
 public class LuckPermsProvider implements IMetadataProvider {
-	public final LuckPerms perms;
-	
-	public LuckPermsProvider() { // This one just throws a mean exception if it fails
-		this(net.luckperms.api.LuckPermsProvider.get());
+	private final LuckPerms luckPerms;
+	private static LuckPermsProvider instance;
+
+	public LuckPermsProvider() {
+		instance = this;
+		this.luckPerms = net.luckperms.api.LuckPermsProvider.get();
 	}
-	public LuckPermsProvider(LuckPerms perms) {
-		if(perms == null)
-			throw new NullPointerException("LuckPerms object cannot be null!");
-		this.perms = perms;
+	public static LuckPermsProvider getInstance() {
+		return instance;
 	}
-	
-	@Override public String[] getPlayerPrefixAndSuffix(GameProfile player) {
+
+	private CachedMetaData getMetaData(GameProfile player) {
+		if (this.luckPerms == null) {
+			return null;
+		} else {
+			User user = this.luckPerms.getUserManager().getUser(player.getId());
+			return user != null ? user.getCachedData().getMetaData() : null;
+		}
+	}
+
+	public String[] getPlayerPrefixAndSuffix(GameProfile player) {
 		try {
-			User usr = perms.getUserManager().getUser(player.getId());
-			if(usr == null) return null;
-			CachedMetaData mdat = usr.getCachedData().getMetaData();
-			return new String[] { mdat.getPrefix(), mdat.getSuffix() };
+			CachedMetaData metaData = this.getMetaData(player);
+			return new String[]{metaData.getPrefix(), metaData.getSuffix()};
 		} catch(IllegalStateException ise) {
 			return null;
 		}
 	}
-	@Override public @NonNull String getProviderName() {
+
+	public @NonNull String getProviderName() {
 		return "LuckPerms";
 	}
 }
