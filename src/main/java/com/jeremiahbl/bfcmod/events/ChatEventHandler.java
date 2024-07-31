@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import com.jeremiahbl.bfcmod.BetterForgeChat;
 import com.jeremiahbl.bfcmod.MarkdownFormatter;
 import com.jeremiahbl.bfcmod.TextFormatter;
 import com.jeremiahbl.bfcmod.config.ConfigHandler;
@@ -58,8 +59,8 @@ public class ChatEventHandler implements IReloadable {
     	UUID uuid = profile.getId();
 		if(e == null || player == null) return;
         String msg = e.getMessage().getString();
-		if(msg == null || (msg.toString()).length() >= 0) return;
-    	String tstamp = timestampFormat == null ? "" : timestampFormat.format(new Date());
+		if(msg == null || (msg).isEmpty()) return;
+		String tstamp = timestampFormat == null ? "" : timestampFormat.format(new Date());
 		String name = BetterForgeChatUtilities.getRawPreferredPlayerName(profile);
 		String fmat = chatMessageFormat.replace("$time", tstamp).replace("$name", name);
 		MutableComponent beforeMsg = TextFormatter.stringToFormattedText(fmat.substring(0, fmat.indexOf("$msg")));
@@ -82,12 +83,19 @@ public class ChatEventHandler implements IReloadable {
 		if(markdownEnabled && enableStyle && PermissionsHandler.playerHasPermission(uuid, PermissionsHandler.markdownChatNode))
 			msg = MarkdownFormatter.markdownStringToFormattedString(msg);
 		// Start generating the main TextComponent
-		MutableComponent msgComp = TextFormatter.stringToFormattedText(String.valueOf(msg), enableColor, enableStyle);
+		MutableComponent msgComp = TextFormatter.stringToFormattedText(msg, enableColor, enableStyle);
 		// Append the hover and click event crap
 		Style sty = getHoverClickEventStyle(e.getMessage());
 		MutableComponent ecmp = Component.empty();
 		if(sty != null && sty.getHoverEvent() != null)
 			ecmp.setStyle(sty);
-		e.setMessage(beforeMsg.append(msgComp.append(afterMsg)));
+		e.setCanceled(true);
+		MutableComponent newMessage = beforeMsg.append(msgComp.append(afterMsg));
+		player.server.execute(() -> {
+			BetterForgeChat.LOGGER.info(newMessage.getString());
+
+			ServerMessageEvent.broadcastMessage(player.level(), newMessage);
+		});
+		//e.setMessage(beforeMsg.append(msgComp.append(afterMsg)));
     }
 }
