@@ -23,7 +23,7 @@ public class BetterForgeChat {
 	public static final String CHAT_ID_STR = 
 			"&cBetter &9&lForge&r &eChat&r &d(c) Jeremiah Lowe, Disa Kandria 2022-2024&r\n";
 	public static final String MODID = "bfcmod";
-	public static final String VERSION = "V2.0.0";
+	public static final String VERSION = "V2.0.2";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static BetterForgeChat instance;
 	
@@ -71,6 +71,6 @@ public class BetterForgeChat {
     	// Register player events (NameFormat and TabListNameFormat)
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
         // Final mod loading completion message
-    	LOGGER.info("Mod loaded up and ready to go! (c) Jeremiah Lowe 2022 - 2023!");
+    	LOGGER.info("Mod loaded up and ready to go! (c) Jeremiah Lowe, Disa Kandria 2022 - 2024!");
     }
 }

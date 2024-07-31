@@ -14,7 +14,7 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.20.1-2.0.0.0'
+version = '1.20.1-2.0.2'
 group = 'com.jeremiahbl.bfcmod'
 
 base {
