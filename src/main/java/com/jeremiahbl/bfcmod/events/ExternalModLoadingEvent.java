@@ -52,7 +52,7 @@ public class ExternalModLoadingEvent {
 			}
 		}else{
 			BetterForgeChat.instance.metadataProvider = null;
-			BetterForgeChat.LOGGER.warn("WARNING - LuckPerms API wasn't found, we won't use it!");
+			BetterForgeChat.LOGGER.warn("LuckPerms API wasn't found, we won't use it!");
 		}
 	}
 	private void loadFtbEssentials() {
