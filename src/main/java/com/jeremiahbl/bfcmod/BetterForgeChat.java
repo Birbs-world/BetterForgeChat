@@ -18,12 +18,12 @@ import net.minecraftforge.network.NetworkConstants;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(BetterForgeChat.MODID)
+@Mod(BetterForgeChat.MODID )
 public class BetterForgeChat {
 	public static final String CHAT_ID_STR = 
-			"&cBetter &9&lForge&r &eChat&r &d(c) Jeremiah Lowe 2022-2023&r\n";
+			"&cBetter &9&lForge&r &eChat&r &d(c) Jeremiah Lowe, Disa Kandria 2022-2024&r\n";
 	public static final String MODID = "bfcmod";
-	public static final String VERSION = "V1.2.1";
+	public static final String VERSION = "V2.0.2";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static BetterForgeChat instance;
 	
@@ -61,7 +61,7 @@ public class BetterForgeChat {
         MinecraftForge.EVENT_BUS.register(this);
         // Register commands
         MinecraftForge.EVENT_BUS.register(commandRegistrator);
-        
+
     }
     private void loadComplete(final FMLLoadCompleteEvent e) {
     	// Register server chat event
@@ -71,6 +71,6 @@ public class BetterForgeChat {
     	// Register player events (NameFormat and TabListNameFormat)
         MinecraftForge.EVENT_BUS.register(playerEventHandler);
         // Final mod loading completion message
-    	LOGGER.info("Mod loaded up and ready to go! (c) Jeremiah Lowe 2022 - 2023!");
+    	LOGGER.info("Mod loaded up and ready to go! (c) Jeremiah Lowe, Disa Kandria 2022 - 2024!");
     }
 }

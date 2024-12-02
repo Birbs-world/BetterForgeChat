@@ -73,10 +73,9 @@ public class NickCommands {
 				return (nicknameIntegrationEnabled || cfgWhoIsEnabled) && 
 					(BfcCommands.checkPermission(c, PermissionsHandler.whoisCommand));
 			}).then(Commands.argument("displayname", StringArgumentType.string())
-				.executes((ctx) -> whoisCommand(ctx))));
+				.executes(NickCommands::whoisCommand)));
 	}
 
-	@SuppressWarnings("resource")
 	private static GameProfile lookupGameProfile(String user) {
 		MinecraftServer serv = ServerLifecycleHooks.getCurrentServer();
 		if(serv != null) {
@@ -84,13 +83,11 @@ public class NickCommands {
 			List<ServerPlayer> players = serv.getPlayerList().getPlayers();
 			for(ServerPlayer player : players) {
 				GameProfile prof = player.getGameProfile();
-				if(prof != null) {
-					String uname = prof.getName().trim().toLowerCase();
-					if(user.equals(uname)) return prof;
-					String nname = BetterForgeChat.instance.nicknameProvider.getPlayerNickname(prof).trim().toLowerCase();
-					if(user.equals(TextFormatter.removeTextFormatting(nname))) return prof; 
-				}
-			}
+                String uname = prof.getName().trim().toLowerCase();
+                if(user.equals(uname)) return prof;
+                String nname = BetterForgeChat.instance.nicknameProvider.getPlayerNickname(prof).trim().toLowerCase();
+                if(user.equals(TextFormatter.removeTextFormatting(nname))) return prof;
+            }
 		}
 		return null;
 	}
@@ -98,7 +95,7 @@ public class NickCommands {
 		String user = StringArgumentType.getString(ctx, "displayname");
 		GameProfile prof = lookupGameProfile(user);
 		if(prof != null) {
-			ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText("&eFound a name matching " + user + ": \"" + prof.getName() + "\"\n&eUUID: " + prof.getId() + "&r"), false);
+			ctx.getSource().sendSuccess(()->TextFormatter.stringToFormattedText("&eFound a name matching " + user + ": \"" + prof.getName() + "\"\n&eUUID: " + prof.getId() + "&r"), false);
 			return 1;
 		} else {
 			ctx.getSource().sendFailure(TextFormatter.stringToFormattedText("&cUnknown username/nickname!&r"));
@@ -107,12 +104,12 @@ public class NickCommands {
 	}
 	private static int assignNickname(CommandContext<CommandSourceStack> ctx, UUID uuid, String nick) {
 		if(nick == null) {
-			ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText("&eNickname reset!&r"), false);
+			ctx.getSource().sendSuccess(()->TextFormatter.stringToFormattedText("&eNickname reset!&r"), false);
 			PlayerData.setNickname(uuid, null);
 			return 1;
 		} else {
 			if(nick.length() >= minNicknameLength && nick.length() <= maxNicknameLength) {
-				ctx.getSource().sendSuccess(TextFormatter.stringToFormattedText("&eNickname set to \"" + nick + "&r&e\"!&r"), false);
+				ctx.getSource().sendSuccess(()->TextFormatter.stringToFormattedText("&eNickname set to \"" + nick + "&r&e\"!&r"), false);
 				PlayerData.setNickname(uuid, nick);
 				return 1;
 			} else {
@@ -125,7 +122,7 @@ public class NickCommands {
 		ServerPlayer player = null;
 		try {
 			player = ctx.getSource().getPlayerOrException();
-		} catch (CommandSyntaxException e) { }
+		} catch (CommandSyntaxException ignored) { }
 		String nick = reset ? null : StringArgumentType.getString(ctx, "nickname");
 		String user = other ? StringArgumentType.getString(ctx, "username") : null;
 		/* /nick OR /nick <nickname> */
